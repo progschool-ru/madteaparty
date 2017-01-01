@@ -19,7 +19,7 @@
 
 
 Этап 3.
-Прислать до субботы 31 декабря 23:59
+Выполнил участник Е.
 
 - Игрок не может взять больше, чем лежит в куче.
 - В конфигурационном файле conf.txt задано сколько лежит в куче, min и max.
@@ -27,6 +27,13 @@
 - Если конфигурация противоречива,
     выводим на экран информацию о том, что не понравилось,
     сразу после этого выходим
+
+
+Этап 4.
+Прислать до 22:00 вторника 3 января
+
+- Если обнаружили, что файла нет, то создаём example файл с какой-то конфигурацией
+- Второй игрок - комп. Ходит как-то: всегда какое-то допустимое число.
 
 
 Известные проблемы:
@@ -39,13 +46,13 @@
 */
 
 #include<stdio.h>
-
 int main()
 {
-    int start = 30;
-    int min = 2;
-    int max = 4;
-
+    int start;
+    int min;
+    int max;
+    FILE *f = fopen("conf.txt", "rt");
+    fscanf(f, "%d%d%d", &start, &min, &max);
     int player_number=1;
     int current = start;
      printf("Course %d player\n",player_number);
@@ -54,7 +61,7 @@ int main()
          int player_takes;
         printf("Available: %d\n", current);        
         scanf("%d", &player_takes);
-        if (player_takes < min || player_takes > max)
+        if (player_takes < min || player_takes > max||player_takes>current)
         {
             printf("Invalid input. You can take any number >= %d and <= %d. Try again (%d <= X <= %d)\n", min, max, min, max);
              if (player_number==1)

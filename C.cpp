@@ -19,7 +19,7 @@
 
 
 Этап 3.
-Прислать до субботы 31 декабря 23:59
+Выполнил участник К.
 
 - Игрок не может взять больше, чем лежит в куче.
 - В конфигурационном файле conf.txt задано сколько лежит в куче, min и max.
@@ -27,6 +27,12 @@
 - Если конфигурация противоречива,
     выводим на экран информацию о том, что не понравилось,
     сразу после этого выходим
+
+Этап 4.
+Прислать до 22:00 вторника 3 января
+
+- Если обнаружили, что файла нет, то создаём example файл с какой-то конфигурацией
+- Второй игрок - комп. Ходит как-то: всегда какое-то допустимое число.
 
 
 Известные проблемы:
@@ -41,24 +47,57 @@
 
 
 #include<stdio.h>
-using namespace std;
-int main(){
-int n=30;
-printf("Left 30. Player 1");
-printf("\n");
-int a=1;
-while(n>1){
-	int cur;
-	scanf("%i",&cur);
-	if(cur!=2 && cur!=3 && cur!=4) {printf("wrong"); printf("\n");}
-	else n=n-cur,a=3-a;
-	printf("Left ");
-	printf("%i",n);
-    printf(". Player");
-    printf(" %i", a);
-	printf("\n");
+
+bool check_config(int n, int min, int max)
+{
+    if (min <= 0)
+    {
+        printf("Min must not be negative\n");
+        return 1;
+    }
+    if (max <= 0)
+    {
+        printf("Max must be positive\n");
+        return 1;
+    }
+    if (min > max)
+    {
+        printf("Min must not be greater than max\n");
+        return 1;
+    }
+    return 0;
 }
-a=3-a;
-printf("The end");
-printf(". The winner is player #%i", a);
+
+int main()
+{
+    FILE *f = fopen("conf.txt", "rt");
+    int n, min, max;
+    fscanf(f, "%d%d%d", &n, &min, &max);
+    fclose(f);
+    if (1 == check_config(n, min, max))
+    {
+        return 1;
+    }
+
+    int player = 1;
+    printf("Left %d. Player %d", n, player);
+    printf("\n");
+    while (n >= min)
+    {
+        int cur;
+        scanf("%i",&cur);
+        if (cur < min || cur > max || cur > n)
+        {
+            printf("wrong\n");
+        }
+        else
+        {
+            n = n - cur;
+            player = 3 - player;
+        }
+        printf("Left %d. Player %d\n", n, player);
+    }
+    player = 3 - player;
+    printf("The end. The winner is player #%i", player);
+    return 0;
 }

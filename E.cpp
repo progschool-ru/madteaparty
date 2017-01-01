@@ -19,7 +19,7 @@
 
 
 Этап 3.
-Прислать до субботы 31 декабря 23:59
+Выполнил участник N.
 
 - Игрок не может взять больше, чем лежит в куче.
 - В конфигурационном файле conf.txt задано сколько лежит в куче, min и max.
@@ -27,6 +27,13 @@
 - Если конфигурация противоречива,
     выводим на экран информацию о том, что не понравилось,
     сразу после этого выходим
+
+
+Этап 4.
+Прислать до 22:00 вторника 3 января
+
+- Если обнаружили, что файла нет, то создаём example файл с какой-то конфигурацией
+- Второй игрок - комп. Ходит как-то: всегда какое-то допустимое число.
 
 
 Известные проблемы:
@@ -41,16 +48,30 @@
 #include<stdio.h>
 int main()
 {
-	int i=30,a;
-	printf("Avalable 30\n");
+	int i=30,a,j,k;
+	FILE *f=fopen("conf.txt","rt");
+	fscanf(f,"%d%d%d",&i,&j,&k);
+	if(i<0)
+	{
+	printf("Error");
+	return 1;
+	}
+	printf("Avalable %d\n",i);
 	int curturn=1;
-	while (i>1)
+	while (i>=j)
 	{
 		printf("%d", curturn);
 		printf (" turn\n");
 
 		scanf ("%d",&a);
-		if (a==2||a==3||a==4)
+		int l=0,m=0;
+		while(m<=k&&m<=i)
+		{
+		if(m<j){}
+		else if(a==m)l=1;
+	    m=m+1;
+		}
+		if(l==1)
 		{
 	    	i=i-a;
 		    printf ("Avalable %d\n",i);
@@ -61,6 +82,6 @@ int main()
 		printf ("invalid input\n");
 	}
 	printf("The end ");
-	printf("%d", curturn);
+	printf("%d", 3-curturn);
 	printf(" wins");
 }

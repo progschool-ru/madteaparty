@@ -19,7 +19,7 @@
 
 
 Этап 3.
-Прислать до субботы 31 декабря 23:59
+Выполнил участник М.
 
 - Игрок не может взять больше, чем лежит в куче.
 - В конфигурационном файле conf.txt задано сколько лежит в куче, min и max.
@@ -29,8 +29,19 @@
     сразу после этого выходим
 
 
+Этап 4.
+Прислать до 22:00 вторника 3 января
+
+- Если обнаружили, что файла нет, то создаём example файл с какой-то конфигурацией
+- Второй игрок - комп. Ходит как-то: всегда какое-то допустимое число.
+- Исправить известные проблемы.
+
+
 Известные проблемы:
-На данный момент известных проблем нет.
+
+- Обнаружил С. В.:
+    не читает из конфига общее количество камней.
+
 Добавляйте сюда проблемы о которых вы знаете, но не смогли или не успели решить.
 
 
@@ -40,25 +51,37 @@
 #include<stdio.h>
 int main()
 {
-    int a=30,c=1,d;
-    while(a>1)
+    int start=30,c=1,player;
+    int min;
+    int max;
+    FILE *f;
+    f=fopen("conf.txt","rt");
+    fscanf(f,"%d%d",&min, &max);
+    fclose(f);
+    if(min>max  ||  min<=0  || max<=0)
     {
-    	 if (c%2==1)
-        d=1;
+    printf("Error in file");
+    }
+    else{
+        while(start>=min)
+    {
+         if (c%2==1)
+        player=1;
         else
-		 d=2;
-        printf("Available: %d\n",a);
+        player=2;
+        printf("Available: %d\n",start);
         int b;
-        printf ("Turn player %d: ",d);
+        printf ("Turn player %d: ",player);
         scanf("%d",&b);
-        while (b<=1||b>=5)
+        while (b<min || b>max || start<b)
         {
             printf("Invalid input.\n");
-            printf ("Turn player %d: ",d);
+            printf ("Turn player %d: ",player);
             scanf("%d",&b);
         }
-        a=a-b;
+        start=start-b;
         c++;
     }
-    printf("The end of the game. Left: %d. %d player win!",a,d);
+    printf("The end of the game. Left: %d. %d player win!",start,player);
+    }
 }

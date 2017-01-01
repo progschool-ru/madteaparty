@@ -19,7 +19,7 @@
 
 
 Этап 3.
-Прислать до субботы 31 декабря 23:59
+Выполнил участник С.
 
 - Игрок не может взять больше, чем лежит в куче.
 - В конфигурационном файле conf.txt задано сколько лежит в куче, min и max.
@@ -29,10 +29,20 @@
     сразу после этого выходим
 
 
-Известные проблемы:
-На данный момент известных проблем нет.
-Добавляйте сюда проблемы о которых вы знаете, но не смогли или не успели решить.
+Этап 4.
+Прислать до 22:00 вторника 3 января
 
+- Если обнаружили, что файла нет, то создаём example файл с какой-то конфигурацией
+- Второй игрок - комп. Ходит как-то: всегда какое-то допустимое число.
+- Исправить известные проблемы.
+
+
+Известные проблемы:
+
+- Обнаружил участник С:
+    Не успел потестить функции ввода/вывода из файла.
+
+Добавляйте сюда проблемы о которых вы знаете, но не смогли или не успели решить.
 
 
 
@@ -40,22 +50,62 @@
 */
 
 #include<stdio.h>
+#include<fstream>
+
+
+
+
+int readcol(){
+    int col;
+    ifstream fin("conf.txt"); // открыли файл для чтения
+    fin >> col; 
+    fin.close(); // закрываем файл
+    return col;
+}
+
+
+
+int readmax(){
+    int max;
+    ifstream fin("conf.txt"); // открыли файл для чтения
+    fin >> max; 
+    fin.close(); // закрываем файл
+    return max;
+}
+
+
+
+int readmin(){
+    int min;
+    ifstream fin("conf.txt"); // открыли файл для чтения
+    fin >> min; 
+    fin.close(); // закрываем файл
+    return min;
+}
+
 int main()
 {
-    int b=30, min = 2, max = 4;
+    
+    int b=readcol();
+    int max=readmax();
+    int min=readmin();
+
+    if(min>max) {printf("Wrong max or min"); return 0;}
+    if(b>=min) {printf("Wrong col"); return 0;}
     int player = 1;
+
     printf("Left 30. Player 1\n");
     while(b>=min)
     {
         int c;
         scanf("%i",&c);
-        if (c < min || c > max)
+        if (c <= min || c >= max || b-c<0)
         {
             printf("wrong");
             printf("\n");
         }
         else 
-        {
+        { 
             b=b-c;
             player = (1 == player) ? 2 : 1;
             printf("Left %d. Player %d\n", b, player);

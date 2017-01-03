@@ -30,10 +30,20 @@
 
 
 Этап 4.
-Прислать до 22:00 вторника 3 января
+Выполнил участник N.
 
 - Если обнаружили, что файла нет, то создаём example файл с какой-то конфигурацией
 - Второй игрок - комп. Ходит как-то: всегда какое-то допустимое число.
+
+
+Этап 5.
+Прислать до 22:00 четверга 5 января
+
+- Комп старается выиграть:
+    если может, ходит правильно,
+    если не может, ходит как-то: какое-то допустимое число.
+- В конфиге можно задать, кто первый, кто второй:
+    комп, чел, два компа, два чела.
 
 
 Известные проблемы:
@@ -52,7 +62,18 @@ int main()
     int min;
     int max;
     FILE *f = fopen("conf.txt", "rt");
+    if(f!=NULL)
+    {
     fscanf(f, "%d%d%d", &start, &min, &max);
+    fclose(f);
+    }
+    else
+    {
+    fopen("conf.txt","wt");
+    start=30;min=1;max=2;
+    printf("%d %d %d", start, min, max);
+    fclose(f);
+    }
     int player_number=1;
     int current = start;
      printf("Course %d player\n",player_number);
@@ -60,7 +81,9 @@ int main()
     {   
          int player_takes;
         printf("Available: %d\n", current);        
+        if(player_number==1)
         scanf("%d", &player_takes);
+        else player_takes=min;
         if (player_takes < min || player_takes > max||player_takes>current)
         {
             printf("Invalid input. You can take any number >= %d and <= %d. Try again (%d <= X <= %d)\n", min, max, min, max);

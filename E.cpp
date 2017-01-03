@@ -30,11 +30,21 @@
 
 
 Этап 4.
-Прислать до 22:00 вторника 3 января
+Выполнил участник C.
 
 - Если обнаружили, что файла нет, то создаём example файл с какой-то конфигурацией
 - Второй игрок - комп. Ходит как-то: всегда какое-то допустимое число.
 
+
+Этап 5.
+Прислать до 22:00 четверга 5 января
+
+- Комп старается выиграть:
+    если может, ходит правильно,
+    если не может, ходит как-то: какое-то допустимое число.
+- В конфиге можно задать, кто первый, кто второй:
+    комп, чел, два компа, два чела.
+- Пусть создаётся не test.txt, а сразу conf.txt
 
 Известные проблемы:
 На данный момент известных проблем нет.
@@ -46,11 +56,30 @@
 */
 
 #include<stdio.h>
+#include<io.h>
+#include<fstream>
 int main()
 {
 	int i=30,a,j,k;
-	FILE *f=fopen("conf.txt","rt");
-	fscanf(f,"%d%d%d",&i,&j,&k);
+	if(access("conf.txt", 0)==0){
+		ofstream ofs("test.txt"); //создать
+		mingen:
+		j=rand()%8+1;//min
+		k=rand()%10+1;//max
+		if(j>k) goto mingen;
+		colgen:
+		i=rand()%50+1;//col
+		if(i<=k) goto colgen
+		fout<<i;
+		fout<<" ";
+		fout<<j;
+		fout<<" ";
+		fout<<k;
+		ofs.close();
+	} //coздать и заполнить
+
+	else{FILE *f=fopen("conf.txt","rt"); fscanf(f,"%d%d%d",&i,&j,&k);}
+
 	if(i<0)
 	{
 	printf("Error");
@@ -63,7 +92,9 @@ int main()
 		printf("%d", curturn);
 		printf (" turn\n");
 
-		scanf ("%d",&a);
+		if(curturn==2) a=rand()%(k-j)+j;
+		else scanf ("%d",&a);
+
 		int l=0,m=0;
 		while(m<=k&&m<=i)
 		{

@@ -30,17 +30,29 @@
 
 
 Этап 4.
-Прислать до 22:00 вторника 3 января
+Выполнил участник E.
 
 - Если обнаружили, что файла нет, то создаём example файл с какой-то конфигурацией
 - Второй игрок - комп. Ходит как-то: всегда какое-то допустимое число.
 - Исправить известные проблемы.
 
 
+Этап 5.
+Прислать до 22:00 четверга 5 января
+
+- Комп старается выиграть:
+    если может, ходит правильно,
+    если не может, ходит как-то: какое-то допустимое число.
+- В конфиге можно задать, кто первый, кто второй:
+    комп, чел, два компа, два чела.
+
+
 Известные проблемы:
 
-- Обнаружил участник С:
+- Обнаружил участник С, исправил участник E:
     Не успел потестить функции ввода/вывода из файла.
+- Обнаружил С.В.:
+    Не создаётся файл с какой-то конфигурацией если исходного файла нет.
 
 Добавляйте сюда проблемы о которых вы знаете, но не смогли или не успели решить.
 
@@ -49,9 +61,11 @@
 
 */
 
+#include <cstdlib>
 #include<stdio.h>
 #include<fstream>
 
+/*
 
 
 
@@ -82,35 +96,48 @@ int readmin(){
     fin.close(); // закрываем файл
     return min;
 }
-
+*/
 int main()
 {
     
-    int b=readcol();
-    int max=readmax();
-    int min=readmin();
-
+    int b,c,x;
+    int max;
+    int min;
+    FILE *f = fopen("conf.txt", "rt");
+    fscanf(f, "%d%d%d", &b,&min,&max);
     if(min>max) {printf("Wrong max or min"); return 0;}
-    if(b>=min) {printf("Wrong col"); return 0;}
+    if(b<=min){printf("Wrong col"); return 0;}
     int player = 1;
-
     printf("Left 30. Player 1\n");
     while(b>=min)
     {
-        int c;
+        if (player==2)
+        {
+            for(int k=0;k!=1;k++)
+            {
+                rand();
+                c= min + rand() %max;
+                printf("%d\n",c);
+                b=b-c;
+                player = (1 == player) ? 2 : 1;
+            printf("Left %d. Player %d\n", b, player);
+}
+        }
+        else
+        {
         scanf("%i",&c);
-        if (c <= min || c >= max || b-c<0)
+        if (c < min || c > max || b-c<0)
         {
             printf("wrong");
             printf("\n");
         }
         else 
-        { 
+        {  
             b=b-c;
             player = (1 == player) ? 2 : 1;
             printf("Left %d. Player %d\n", b, player);
         }
-       
+        }
     }
     player = (1 == player) ? 2 : 1;
     printf("The end. The winner is player #%d!\n", player);

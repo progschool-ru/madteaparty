@@ -30,16 +30,26 @@
 
 
 Этап 4.
-Прислать до 22:00 вторника 3 января
+Выполнил участник K.
 
 - Если обнаружили, что файла нет, то создаём example файл с какой-то конфигурацией
 - Второй игрок - комп. Ходит как-то: всегда какое-то допустимое число.
 - Исправить известные проблемы.
 
 
+Этап 5.
+Прислать до 22:00 четверга 5 января
+
+- Комп старается выиграть:
+    если может, ходит правильно,
+    если не может, ходит как-то: какое-то допустимое число.
+- В конфиге можно задать, кто первый, кто второй:
+    комп, чел, два компа, два чела.
+
+
 Известные проблемы:
 
-- Обнаружил С. В.:
+- Обнаружил С.В. Исправил участник K.
     не читает из конфига общее количество камней.
 
 Добавляйте сюда проблемы о которых вы знаете, но не смогли или не успели решить.
@@ -49,39 +59,61 @@
 */
 
 #include<stdio.h>
+
+int humanTakes(int current, int min, int max) {
+    int takes;
+    scanf("%d", &takes);
+    return takes;
+}
+
+int compTakes(int current, int min, int max) {
+    return min;
+}
+
 int main()
 {
-    int start=30,c=1,player;
+    int start,c=1,player;
     int min;
     int max;
     FILE *f;
     f=fopen("conf.txt","rt");
-    fscanf(f,"%d%d",&min, &max);
-    fclose(f);
+    if (f != NULL)
+    {
+        fscanf(f,"%d%d%d", &start, &min, &max);
+        fclose(f);
+    }
+    else
+    {
+        start = 30;
+        min = 1;
+        max = 2;
+        f = fopen("conf.txt", "wt");
+        fprintf(f, "%d %d %d\n", start, min, max);
+        fclose(f);
+    }
+
     if(min>max  ||  min<=0  || max<=0)
     {
-    printf("Error in file");
+        printf("Error in file");
+        return 1;
     }
-    else{
-        while(start>=min)
+
+    int current = start;
+    while(current>=min)
     {
-         if (c%2==1)
-        player=1;
-        else
-        player=2;
-        printf("Available: %d\n",start);
+        player = c % 2 == 1 ? 1 : 2;
+        printf("Available: %d\n",current);
         int b;
         printf ("Turn player %d: ",player);
-        scanf("%d",&b);
-        while (b<min || b>max || start<b)
+        b = player == 1 ? humanTakes(current, min, max) : compTakes(current, min, max);
+        while (b<min || b>max || current<b)
         {
             printf("Invalid input.\n");
-            printf ("Turn player %d: ",player);
-            scanf("%d",&b);
+            printf ("Turn player %d: \n",player);
+            b = player == 1 ? humanTakes(current, min, max) : compTakes(current, min, max);
         }
-        start=start-b;
+        current = current - b;
         c++;
     }
-    printf("The end of the game. Left: %d. %d player win!",start,player);
-    }
+    printf("The end of the game. Left: %d. %d player win!", current, player);
 }

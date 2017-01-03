@@ -29,14 +29,27 @@
     сразу после этого выходим
 
 Этап 4.
-Прислать до 22:00 вторника 3 января
+Выполнил участник M.
 
 - Если обнаружили, что файла нет, то создаём example файл с какой-то конфигурацией
 - Второй игрок - комп. Ходит как-то: всегда какое-то допустимое число.
 
 
+Этап 5.
+Прислать до 22:00 четверга 5 января
+
+- Комп старается выиграть:
+    если может, ходит правильно,
+    если не может, ходит как-то: какое-то допустимое число.
+- В конфиге можно задать, кто первый, кто второй:
+    комп, чел, два компа, два чела.
+
+
 Известные проблемы:
-На данный момент известных проблем нет.
+
+- Обнаружил С.В.:
+    если конфигурационного файла нет, то падает с "Segmentation fault: 11"
+
 Добавляйте сюда проблемы о которых вы знаете, но не смогли или не успели решить.
 
 
@@ -46,10 +59,27 @@
 
 
 
-#include<stdio.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
 bool check_config(int n, int min, int max)
 {
+    if (n < max)
+    {
+        printf("Max must not be greater than Left\n");
+        return 1;
+    }
+    if (n <= min)
+    {
+        printf("Min must not be greater than Left\n");
+        return 1;
+    }
+    if (n <= 0)
+    {
+        printf("Must be a natural number\n");
+        return 1;
+    }
     if (min <= 0)
     {
         printf("Min must not be negative\n");
@@ -69,23 +99,56 @@ bool check_config(int n, int min, int max)
 }
 
 int main()
-{
+{   
+    
+       int n, min, max;
     FILE *f = fopen("conf.txt", "rt");
-    int n, min, max;
     fscanf(f, "%d%d%d", &n, &min, &max);
     fclose(f);
+    if (f == NULL)
+     { 
+       int b[3];
+       srand(time(NULL));
+       for(int i=0;i<3; i=i+1)
+       {
+       b[i]=rand()%49+1;
+       }
+       FILE *w = fopen("conf.txt", "wb");
+        fprintf(w,"%d %d %d",b[0],b[1],b[2]);
+        fclose (w);
+        n=b[0];
+        min=b[1];
+        max=b[2];
+       }
     if (1 == check_config(n, min, max))
     {
         return 1;
     }
+     
 
+       
+       
     int player = 1;
     printf("Left %d. Player %d", n, player);
     printf("\n");
     while (n >= min)
-    {
+    {    
+        if(player==2)
+        {            
+             int r=0;
+             srand(time(NULL));
+             r=rand()%(max-min+1)+min;
+             printf("%d", r);
+             printf("\n");
+             n=n-r;
+             player = 1;
+             
+        }
+        else
+        {
         int cur;
-        scanf("%i",&cur);
+          scanf("%i",&cur);
+          
         if (cur < min || cur > max || cur > n)
         {
             printf("wrong\n");
@@ -95,6 +158,10 @@ int main()
             n = n - cur;
             player = 3 - player;
         }
+       
+        
+        }
+          
         printf("Left %d. Player %d\n", n, player);
     }
     player = 3 - player;

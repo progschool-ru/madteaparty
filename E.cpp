@@ -37,7 +37,7 @@
 
 
 Этап 5.
-Прислать до 22:00 четверга 5 января
+Выполнил участник M.
 
 - Комп старается выиграть:
     если может, ходит правильно,
@@ -46,8 +46,20 @@
     комп, чел, два компа, два чела.
 - Пусть создаётся не test.txt, а сразу conf.txt
 
+
+Этап 6.
+Прислать до 22:00 субботы 7 января
+
+- Тестируем, исправляем ошибки.
+- Смотрим код, выискиваем потенциальные ошибки, тестируем, исправляем.
+- Улучшаем пользовательский интерфейс на своё усмотрение, но оставляя его текстовым.
+
+
 Известные проблемы:
-На данный момент известных проблем нет.
+
+- Обнаружил участник M:
+    Не сделан выбор, кто компьютер, а кто человек.
+ 
 Добавляйте сюда проблемы о которых вы знаете, но не смогли или не успели решить.
 
 
@@ -57,28 +69,37 @@
 
 #include<stdio.h>
 #include<io.h>
-#include<fstream>
+#include <fstream>
+#include <iostream>
+#include <stdlib.h>
+#include <time.h>
+
+using namespace std;
+
 int main()
 {
-	int i=30,a,j,k;
-	if(access("conf.txt", 0)==0){
-		ofstream ofs("test.txt"); //создать
+	int i=30,a,min,max;
+	FILE *f=fopen("conf.txt","rt"); fscanf(f,"%d%d%d",&i,&min,&max);
+	if(f == NULL){
+		ofstream fout;
+		fout.open("conf.txt");
 		mingen:
-		j=rand()%8+1;//min
-		k=rand()%10+1;//max
-		if(j>k) goto mingen;
+        srand(time(NULL));
+		min=rand()%8+1;
+		max=rand()%10+1;//max
+		if(min>max) goto mingen;
 		colgen:
 		i=rand()%50+1;//col
-		if(i<=k) goto colgen
+		if(i<=max) goto colgen;
 		fout<<i;
 		fout<<" ";
-		fout<<j;
+		fout<<min;
 		fout<<" ";
-		fout<<k;
-		ofs.close();
+		fout<<max;
+		fout.close();
 	} //coздать и заполнить
 
-	else{FILE *f=fopen("conf.txt","rt"); fscanf(f,"%d%d%d",&i,&j,&k);}
+	else{FILE *f=fopen("conf.txt","rt"); fscanf(f,"%d%d%d",&i,&min,&max);}
 
 	if(i<0)
 	{
@@ -87,20 +108,36 @@ int main()
 	}
 	printf("Avalable %d\n",i);
 	int curturn=1;
-	while (i>=j)
+	while (i>=min)
 	{
 		printf("%d", curturn);
 		printf (" turn\n");
 
-		if(curturn==2) a=rand()%(k-j)+j;
-		else scanf ("%d",&a);
+		if(curturn==2){
+		    if(i%(min+max)>min)
+		    {
+		        a=i%(min+max);
+		        printf("%d\n", a);
+		    }
+		    else{
+            srand(time(NULL));
+            a=rand()%(max-min)+min;
+            printf("%d\n", a);
+		    }
+		    
+		} 
+		else{
+		  scanf ("%d",&a);  
+		} 
 
 		int l=0,m=0;
-		while(m<=k&&m<=i)
+		while(m<=max&&m<=i)
 		{
-		if(m<j){}
+		if(m<min){}
 		else if(a==m)l=1;
-	    m=m+1;
+	    {
+        m=m+1;
+	    }
 		}
 		if(l==1)
 		{

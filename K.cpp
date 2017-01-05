@@ -37,13 +37,21 @@
 
 
 Этап 5.
-Прислать до 22:00 четверга 5 января
+Выполнил участник N.
 
 - Комп старается выиграть:
     если может, ходит правильно,
     если не может, ходит как-то: какое-то допустимое число.
 - В конфиге можно задать, кто первый, кто второй:
     комп, чел, два компа, два чела.
+
+
+Этап 6.
+Прислать до 22:00 субботы 7 января
+
+- Тестируем, исправляем ошибки.
+- Смотрим код, выискиваем потенциальные ошибки, тестируем, исправляем.
+- Улучшаем пользовательский интерфейс на своё усмотрение, но оставляя его текстовым.
 
 
 Известные проблемы:
@@ -58,20 +66,21 @@
 #include<stdio.h>
 int main()
 {
-    int start;
+    int start,o;
     int min;
     int max;
+    int k,l;
     FILE *f = fopen("conf.txt", "rt");
     if(f!=NULL)
     {
-    fscanf(f, "%d%d%d", &start, &min, &max);
+    fscanf(f, "%d%d%d%d%d", &start, &min, &max, &k, &l);
     fclose(f);
     }
     else
     {
-    fopen("conf.txt","wt");
-    start=30;min=1;max=2;
-    printf("%d %d %d", start, min, max);
+    f=fopen("conf.txt","wt");
+    start=30;min=1;max=2;k=0;l=1;
+    fprintf(f,"%d %d %d %d %d", start, min, max,k,l);
     fclose(f);
     }
     int player_number=1;
@@ -81,9 +90,12 @@ int main()
     {   
          int player_takes;
         printf("Available: %d\n", current);        
-        if(player_number==1)
+        if(player_number==1&&!k||player_number==2&&!l)
         scanf("%d", &player_takes);
-        else player_takes=min;
+        else {
+        o=current%(min+max);
+        player_takes=o<min?min:o>=max?max:o;
+        }
         if (player_takes < min || player_takes > max||player_takes>current)
         {
             printf("Invalid input. You can take any number >= %d and <= %d. Try again (%d <= X <= %d)\n", min, max, min, max);

@@ -38,7 +38,7 @@
 
 
 Этап 5.
-Прислать до 22:00 четверга 5 января
+Выполнил участник К.
 
 - Комп старается выиграть:
     если может, ходит правильно,
@@ -47,11 +47,19 @@
     комп, чел, два компа, два чела.
 
 
+Этап 6.
+Прислать до 22:00 субботы 7 января
+
+- Тестируем, исправляем ошибки.
+- Смотрим код, выискиваем потенциальные ошибки, тестируем, исправляем.
+- Улучшаем пользовательский интерфейс на своё усмотрение, но оставляя его текстовым.
+
+
 Известные проблемы:
 
 - Обнаружил участник С, исправил участник E:
     Не успел потестить функции ввода/вывода из файла.
-- Обнаружил С.В.:
+- Обнаружил С.В., исправил участник K:
     Не создаётся файл с какой-то конфигурацией если исходного файла нет.
 
 Добавляйте сюда проблемы о которых вы знаете, но не смогли или не успели решить.
@@ -62,70 +70,75 @@
 */
 
 #include <cstdlib>
-#include<stdio.h>
-#include<fstream>
-
-/*
+#include <stdio.h>
+#include <fstream>
 
 
-
-int readcol(){
-    int col;
-    ifstream fin("conf.txt"); // открыли файл для чтения
-    fin >> col; 
-    fin.close(); // закрываем файл
-    return col;
+int humanTakes(int total, int min, int max)
+{
+    int c;
+    scanf("%i",&c);
+    return c;
 }
 
-
-
-int readmax(){
-    int max;
-    ifstream fin("conf.txt"); // открыли файл для чтения
-    fin >> max; 
-    fin.close(); // закрываем файл
-    return max;
+int compTakes(int total, int min, int max)
+{
+    int rest = total % (min + max);
+    if (rest < min)
+    {
+        rand();
+        return min + rand() % max;
+    }
+    else if (rest >= max)
+    {
+        return max;
+    }
+    else
+    {
+        return rest;
+    }
 }
 
-
-
-int readmin(){
-    int min;
-    ifstream fin("conf.txt"); // открыли файл для чтения
-    fin >> min; 
-    fin.close(); // закрываем файл
-    return min;
-}
-*/
 int main()
 {
     
     int b,c,x;
     int max;
     int min;
+    int playerIsComp[3];
     FILE *f = fopen("conf.txt", "rt");
-    fscanf(f, "%d%d%d", &b,&min,&max);
-    if(min>max) {printf("Wrong max or min"); return 0;}
-    if(b<=min){printf("Wrong col"); return 0;}
+    if (f != NULL)
+    {
+        fscanf(f, "%d%d%d%d%d", &b, &min, &max, &playerIsComp[1], &playerIsComp[2]);
+        if(min>max) {printf("Wrong max or min"); return 0;}
+        if(b<=min){printf("Wrong col"); return 0;}
+        fclose(f);
+    }
+    else
+    {
+        b = 30;
+        min = 1;
+        max = 2;
+        playerIsComp[1] = 0;
+        playerIsComp[2] = 1;
+        f = fopen("conf.txt", "wt");
+        fprintf(f, "%d\n%d %d\n%d %d\n", b, min, max, playerIsComp[1], playerIsComp[2]);
+        fclose(f);
+    }
     int player = 1;
-    printf("Left 30. Player 1\n");
+    printf("Left %d. Player %d\n", b, player);
     while(b>=min)
     {
-        if (player==2)
+        if (1 == playerIsComp[player])
         {
-            for(int k=0;k!=1;k++)
-            {
-                rand();
-                c= min + rand() %max;
-                printf("%d\n",c);
-                b=b-c;
-                player = (1 == player) ? 2 : 1;
-            printf("Left %d. Player %d\n", b, player);
-}
+            c = compTakes(b, min, max);
+            printf("Comp takes %d\n",c);
         }
         else
         {
-        scanf("%i",&c);
+            c = humanTakes(b, min, max);
+        }
+
         if (c < min || c > max || b-c<0)
         {
             printf("wrong");
@@ -136,7 +149,6 @@ int main()
             b=b-c;
             player = (1 == player) ? 2 : 1;
             printf("Left %d. Player %d\n", b, player);
-        }
         }
     }
     player = (1 == player) ? 2 : 1;

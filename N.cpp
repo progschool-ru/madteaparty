@@ -38,7 +38,7 @@
 
 
 Этап 5.
-Прислать до 22:00 четверга 5 января
+Выполнил участник C.
 
 - Комп старается выиграть:
     если может, ходит правильно,
@@ -46,11 +46,23 @@
 - В конфиге можно задать, кто первый, кто второй:
     комп, чел, два компа, два чела.
 
+В файле еще 2 числа.Первое-комп или человек первый игрок. Второе аналогично. 0-комп,1-человек
+
+
+Этап 6.
+Прислать до 22:00 субботы 7 января
+
+- Тестируем, исправляем ошибки.
+- Смотрим код, выискиваем потенциальные ошибки, тестируем, исправляем.
+- Улучшаем пользовательский интерфейс на своё усмотрение, но оставляя его текстовым.
+
 
 Известные проблемы:
 
 - Обнаружил С.В. Исправил участник K.
     не читает из конфига общее количество камней.
+- Обнаружил С.В.:
+    не компилируется.
 
 Добавляйте сюда проблемы о которых вы знаете, но не смогли или не успели решить.
 
@@ -60,14 +72,26 @@
 
 #include<stdio.h>
 
-int humanTakes(int current, int min, int max) {
+int firstTakes(int current, int min, int max, int first) 
+    if(first==0){
+        if(current%(min+max)>min) return current%(min+max)-min-1;
+        else return min;
+    }
+    else{
     int takes;
     scanf("%d", &takes);
-    return takes;
+    return takes;}
 }
 
-int compTakes(int current, int min, int max) {
-    return min;
+int secondTakes(int current, int min, int max, int second) {
+    if(second==0){
+        if(current%(min+max)>min) return current%(min+max)-min-1;
+        else return min;
+    }
+    else{
+    int takes;
+    scanf("%d", &takes);
+    return takes;}
 }
 
 int main()
@@ -75,11 +99,13 @@ int main()
     int start,c=1,player;
     int min;
     int max;
+    int first;
+    int second;
     FILE *f;
     f=fopen("conf.txt","rt");
     if (f != NULL)
     {
-        fscanf(f,"%d%d%d", &start, &min, &max);
+        fscanf(f,"%d%d%d%d%d", &start, &min, &max, &first, &second);
         fclose(f);
     }
     else
@@ -87,8 +113,10 @@ int main()
         start = 30;
         min = 1;
         max = 2;
+        first=1;
+        second=2;
         f = fopen("conf.txt", "wt");
-        fprintf(f, "%d %d %d\n", start, min, max);
+        fprintf(f, "%d %d %d %d %d\n", start, min, max,first, second);
         fclose(f);
     }
 
@@ -105,12 +133,12 @@ int main()
         printf("Available: %d\n",current);
         int b;
         printf ("Turn player %d: ",player);
-        b = player == 1 ? humanTakes(current, min, max) : compTakes(current, min, max);
+        b = player == 1 ? firstTakes(current, min, max) : secondTakes(current, min, max, second);
         while (b<min || b>max || current<b)
         {
             printf("Invalid input.\n");
             printf ("Turn player %d: \n",player);
-            b = player == 1 ? humanTakes(current, min, max) : compTakes(current, min, max);
+            b = player == 1 ? firstTakes(current, min, max) : secondTakes(current, min, max, first);
         }
         current = current - b;
         c++;

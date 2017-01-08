@@ -48,17 +48,27 @@
 
 
 Этап 6.
-Прислать до 22:00 субботы 7 января
+Выполнил участник K.
 
 - Тестируем, исправляем ошибки.
 - Смотрим код, выискиваем потенциальные ошибки, тестируем, исправляем.
 - Улучшаем пользовательский интерфейс на своё усмотрение, но оставляя его текстовым.
 
 
+Этап 7.
+Прислать до 22:00 вторника 10 января
+
+- Избавьтесь от импорта ненужных библиотек.
+- Тестируем, исправляем ошибки.
+- Смотрим код, выискиваем потенциальные ошибки, тестируем, исправляем.
+- Улучшаем пользовательский интерфейс на своё усмотрение, но оставляя его текстовым.
+
 Известные проблемы:
 
-- Обнаружил участник M:
+- Обнаружил участник M, исправил участник K:
     Не сделан выбор, кто компьютер, а кто человек.
+- Обнаружил участник К, исправил участник К:
+    Компьютер может взять больше чем осталось в куче.
  
 Добавляйте сюда проблемы о которых вы знаете, но не смогли или не успели решить.
 
@@ -67,8 +77,7 @@
 
 */
 
-#include<stdio.h>
-#include<io.h>
+#include <stdio.h>
 #include <fstream>
 #include <iostream>
 #include <stdlib.h>
@@ -76,35 +85,68 @@
 
 using namespace std;
 
+bool check_config(int n, int min, int max)
+{
+    if (n < min)
+    {
+        printf("Min must not be greater than total number\n");
+        return 0;
+    }
+    if (n <= 0)
+    {
+        printf("Total must be positive\n");
+        return 0;
+    }
+    if (min <= 0)
+    {
+        printf("Min must be positive\n");
+        return 0;
+    }
+    if (max <= 0)
+    {
+        printf("Max must be positive\n");
+        return 0;
+    }
+    if (min > max)
+    {
+        printf("Min must not be greater than max\n");
+        return 0;
+    }
+    return 1;
+}
+
+
 int main()
 {
-	int i=30,a,min,max;
-	FILE *f=fopen("conf.txt","rt"); fscanf(f,"%d%d%d",&i,&min,&max);
+	srand(time(NULL));
+	int i,a,min,max;
+	int isComp[3];
+	FILE *f=fopen("conf.txt","rt");
 	if(f == NULL){
 		ofstream fout;
 		fout.open("conf.txt");
 		mingen:
-        srand(time(NULL));
-		min=rand()%8+1;
-		max=rand()%10+1;//max
-		if(min>max) goto mingen;
+			min=rand()%8+1;
+			max=rand()%10+1;//max
+			if(min>max) goto mingen;
 		colgen:
-		i=rand()%50+1;//col
-		if(i<=max) goto colgen;
-		fout<<i;
-		fout<<" ";
-		fout<<min;
-		fout<<" ";
-		fout<<max;
+			i=rand()%50+1;//col
+			if(i<=max) goto colgen;
+		fout<<i << " " << min << " " << max << endl;
+		fout << "0 1" << endl;
 		fout.close();
 	} //coздать и заполнить
-
-	else{FILE *f=fopen("conf.txt","rt"); fscanf(f,"%d%d%d",&i,&min,&max);}
-
-	if(i<0)
+	else
 	{
-	printf("Error");
-	return 1;
+		FILE *f=fopen("conf.txt","rt");
+		fscanf(f,"%d%d%d%d%d",&i,&min,&max, &isComp[1], &isComp[2]);
+		fclose(f);
+	}
+
+	if (!check_config(i, min, max))
+	{
+		printf("Error\n");
+		return 1;
 	}
 	printf("Avalable %d\n",i);
 	int curturn=1;
@@ -113,43 +155,36 @@ int main()
 		printf("%d", curturn);
 		printf (" turn\n");
 
-		if(curturn==2){
-		    if(i%(min+max)>min)
-		    {
-		        a=i%(min+max);
-		        printf("%d\n", a);
-		    }
-		    else{
-            srand(time(NULL));
-            a=rand()%(max-min)+min;
-            printf("%d\n", a);
-		    }
-		    
+		if (1 == isComp[curturn]) {
+			int r = i%(min+max);
+			if (r >= max)
+			{
+				a = max;
+			}
+			else if (r >= min)
+			{
+				a = r;
+			}
+			else
+			{
+				a=rand()%(max-min)+min;
+			}
+			printf("%d\n", a);
 		} 
-		else{
+		else
+		{
 		  scanf ("%d",&a);  
 		} 
-
-		int l=0,m=0;
-		while(m<=max&&m<=i)
-		{
-		if(m<min){}
-		else if(a==m)l=1;
-	    {
-        m=m+1;
-	    }
-		}
-		if(l==1)
+		if (min <=a && a <= max && a <= i)
 		{
 	    	i=i-a;
 		    printf ("Avalable %d\n",i);
-		    if(curturn==1) curturn=2;
-		    else curturn=1;
+			curturn = 3 - curturn;
 	    }
 	    else
-		printf ("invalid input\n");
+		{
+			printf ("invalid input\n");
+		}
 	}
-	printf("The end ");
-	printf("%d", 3-curturn);
-	printf(" wins");
+	printf("The end. %d wins\n", 3 - curturn);
 }

@@ -48,8 +48,17 @@
 
 
 Этап 6.
-Прислать до 22:00 субботы 7 января
+Выполнил участник M.
 
+- Тестируем, исправляем ошибки.
+- Смотрим код, выискиваем потенциальные ошибки, тестируем, исправляем.
+- Улучшаем пользовательский интерфейс на своё усмотрение, но оставляя его текстовым.
+
+
+Этап 7.
+Прислать до 22:00 вторника 10 января
+
+- Избавьтесь от импорта ненужных библиотек.
 - Тестируем, исправляем ошибки.
 - Смотрим код, выискиваем потенциальные ошибки, тестируем, исправляем.
 - Улучшаем пользовательский интерфейс на своё усмотрение, но оставляя его текстовым.
@@ -72,6 +81,7 @@
 #include <cstdlib>
 #include <stdio.h>
 #include <fstream>
+#include <time.h>
 
 
 int humanTakes(int total, int min, int max)
@@ -87,7 +97,7 @@ int compTakes(int total, int min, int max)
     if (rest < min)
     {
         rand();
-        return min + rand() % max;
+        return rand() % max + min;
     }
     else if (rest >= max)
     {
@@ -116,15 +126,27 @@ int main()
     }
     else
     {
-        b = 30;
-        min = 1;
-        max = 2;
-        playerIsComp[1] = 0;
-        playerIsComp[2] = 1;
+        srand(time(NULL));
+        b = rand()%40+10;
+        min = rand()%8+1;
+        max = rand()%10+1;
+        if(min>max)
+        while(min>max)
+        {
+        min = rand()%8+1;
+        max = rand()%10+1;
+        }
+         while(max>=b)
+        {
+        b = rand()%40+10;
+        }
+        
+        playerIsComp[1] = rand()%2;
+        playerIsComp[2] = rand()%2;
         f = fopen("conf.txt", "wt");
         fprintf(f, "%d\n%d %d\n%d %d\n", b, min, max, playerIsComp[1], playerIsComp[2]);
         fclose(f);
-    }
+     }
     int player = 1;
     printf("Left %d. Player %d\n", b, player);
     while(b>=min)

@@ -46,8 +46,17 @@
 
 
 Этап 6.
-Прислать до 22:00 субботы 7 января
+Выполнил участник N.
 
+- Тестируем, исправляем ошибки.
+- Смотрим код, выискиваем потенциальные ошибки, тестируем, исправляем.
+- Улучшаем пользовательский интерфейс на своё усмотрение, но оставляя его текстовым.
+
+
+Этап 7.
+Прислать до 22:00 вторника 10 января
+
+- Избавьтесь от импорта ненужных библиотек.
 - Тестируем, исправляем ошибки.
 - Смотрим код, выискиваем потенциальные ошибки, тестируем, исправляем.
 - Улучшаем пользовательский интерфейс на своё усмотрение, но оставляя его текстовым.
@@ -55,9 +64,9 @@
 
 Известные проблемы:
 
-- Обнаружил С.В.:
+- Обнаружил С.В. Исправил участник N:
     если конфигурационного файла нет, то падает с "Segmentation fault: 11"
-- Обнаружил участник E.:
+- Обнаружил участник E. Исправил участник N:
     не реализован случай, когда играют 2 компа или 2 человека
 
 Добавляйте сюда проблемы о которых вы знаете, но не смогли или не успели решить.
@@ -111,10 +120,10 @@ bool check_config(int n, int min, int max)
 
 int main()
 {   
-        //ofstream ofs("conf.txt");
-       int n, min, max, player;
+    srand(time(NULL));
+       int n, min, max, player=1, a;
     FILE *f = fopen("conf.txt", "rt");
-    fscanf(f, "%d%d%d%d", &n, &min, &max, &player);
+    fscanf(f, "%d%d%d%d", &n, &min, &max, &a);
     fclose(f);
     if (f == NULL)
      { 
@@ -125,12 +134,12 @@ int main()
        b[i]=rand()%49+1;
        }
        FILE *w = fopen("conf.txt", "wb");
-        fprintf(w,"%d %d %d %d",b[0],b[1],b[2]),b[3];
+        fprintf(w,"%d %d %d %d",b[0],b[1],b[2],2);
         fclose (w);
         n=b[0];
         min=b[1];
         max=b[2];
-        player=b[3];
+        a=2;
        }
     if (1 == check_config(n, min, max))
     {
@@ -144,27 +153,30 @@ int main()
     printf("\n");
     while (n >= min)
     {    
-        if(player==2)
+        if(player==2&&(a&2) || player==1&&(a&1))
         { 
-            int r=0;
-             srand(time(NULL));
-             r=rand()%(max-min+1)+min;
-             if (n%(min + max)>=min) 
+             if (n%(min + max)>=max) 
              {
+            int r=max;
              printf("%d", r);
              printf("\n");
              n=n-r;
-             player = 1;
+             player = 3-player;
+         }else if(n%(min + max)>=min){
+            int r=n%(min + max);
+             printf("%d", r);
+             printf("\n");
+             n=n-r;
+             player = 3-player;
             }
             else
             {
-                while (n%(min + max)>=min)
-                {
-                    srand(time(NULL));
-                    r=rand()%(max-min+1)+min;
-                }
-                 printf("%d", r);
-                 printf("\n");
+            int r=0;
+             r=rand()%(max-min+1)+min;
+             printf("%d", r);
+             printf("\n");
+             n=n-r;
+             player = 3-player;
             }
              
         }
@@ -189,6 +201,6 @@ int main()
         printf("Left %d. Player %d\n", n, player);
     }
     player = 3 - player;
-    printf("The end. The winner is player #%i", player);
+    printf("The end. The winner is player #%i\n", player);
     return 0;
 }

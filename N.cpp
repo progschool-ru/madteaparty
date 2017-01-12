@@ -58,7 +58,7 @@
 
 
 Этап 7.
-Прислать до 22:00 вторника 10 января
+Выполнил участник M.
 
 - Тестируем, исправляем ошибки.
 - Смотрим код, выискиваем потенциальные ошибки, тестируем, исправляем.
@@ -86,14 +86,17 @@
 
 */
 
-#include<stdio.h>
+#include <cstdlib>
+#include <stdio.h>
+#include <fstream>
+#include <time.h>
 
-int firstTakes(int current, int min, int max) 
+
+int firstTakes(int current, int min, int max,int first) 
     {
-        int first;
         if (first==0) {
-        if(current%(min+max)>min) return current%(min+max)-min-1;
-        else return min;
+        if(current%(min+max)>min) return current%(min+max);
+        else return rand()%(max-min)+min;
     }
     else{
     int takes;
@@ -103,8 +106,8 @@ int firstTakes(int current, int min, int max)
 
 int secondTakes(int current, int min, int max, int second) {
     if(second==0){
-        if(current%(min+max)>min) return current%(min+max)-min-1;
-        else return min;
+        if(current%(min+max)>min) return current%(min+max);
+        else return rand() %(max-min)+min;
     }
     else{
     int takes;
@@ -128,11 +131,12 @@ int main()
     }
     else
     {
-        start = 30;
-        min = 1;
-        max = 2;
-        first=1;
-        second=2;
+        srand(time(NULL));
+        min = rand()%8+1;
+        max = rand()%10+1;
+        start = rand()%40+10;
+        first=rand()%2;
+        second=rand()%2;
         f = fopen("conf.txt", "wt");
         fprintf(f, "%d %d %d %d %d\n", start, min, max,first, second);
         fclose(f);
@@ -150,16 +154,17 @@ int main()
         player = c % 2 == 1 ? 1 : 2;
         printf("Available: %d\n",current);
         int b;
-        printf ("Turn player %d: ",player);
-        b = player == 1 ? firstTakes(current, min, max) : secondTakes(current, min, max, second);
+        printf ("Turn player %d: \n",player);
+        b = player == 1 ? firstTakes(current, min, max,first) : secondTakes(current, min, max, second);
         while (b<min || b>max || current<b)
         {
             printf("Invalid input.\n");
             printf ("Turn player %d: \n",player);
-            b = player == 1 ? firstTakes(current, min, max) : secondTakes(current, min, max, first);
+            scanf("%d", &b);
         }
         current = current - b;
         c++;
     }
     printf("The end of the game. Left: %d. %d player win!", current, player);
 }
+

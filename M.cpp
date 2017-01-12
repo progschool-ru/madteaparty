@@ -56,7 +56,7 @@
 
 
 Этап 7.
-Прислать до 22:00 вторника 10 января
+Выполнил участник N.
 
 - Избавьтесь от импорта ненужных библиотек.
 - Тестируем, исправляем ошибки.
@@ -70,6 +70,8 @@
     Не успел потестить функции ввода/вывода из файла.
 - Обнаружил С.В., исправил участник K:
     Не создаётся файл с какой-то конфигурацией если исходного файла нет.
+- Обнаружил участник N, исправил участник N:
+    - инициализация случайным моментом времени не происходила, если конфигурационный файл существовал.
 
 Добавляйте сюда проблемы о которых вы знаете, но не смогли или не успели решить.
 
@@ -80,7 +82,6 @@
 
 #include <cstdlib>
 #include <stdio.h>
-#include <fstream>
 #include <time.h>
 
 
@@ -116,6 +117,7 @@ int main()
     int max;
     int min;
     int playerIsComp[3];
+    srand(time(NULL));
     FILE *f = fopen("conf.txt", "rt");
     if (f != NULL)
     {
@@ -126,7 +128,6 @@ int main()
     }
     else
     {
-        srand(time(NULL));
         b = rand()%40+10;
         min = rand()%8+1;
         max = rand()%10+1;
@@ -148,9 +149,9 @@ int main()
         fclose(f);
      }
     int player = 1;
-    printf("Left %d. Player %d\n", b, player);
     while(b>=min)
     {
+    printf("Left %d, min %d, max %d. Player %d\n", b, min, max, player);
         if (1 == playerIsComp[player])
         {
             c = compTakes(b, min, max);
@@ -170,7 +171,6 @@ int main()
         {  
             b=b-c;
             player = (1 == player) ? 2 : 1;
-            printf("Left %d. Player %d\n", b, player);
         }
     }
     player = (1 == player) ? 2 : 1;

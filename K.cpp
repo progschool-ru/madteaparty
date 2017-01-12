@@ -55,7 +55,7 @@
 
 
 Этап 7.
-Прислать до 22:00 вторника 10 января
+Выполнил участник K.
 
 - Тестируем, исправляем ошибки.
 - Смотрим код, выискиваем потенциальные ошибки, тестируем, исправляем.
@@ -63,7 +63,12 @@
 
 
 Известные проблемы:
-На данный момент известных проблем нет.
+
+- Обнаружил участник К. Исправил участник К.
+    - Когда в последний ход оставалось меньше, чем брал ходивший игрок,
+      программа не передавала ход следующему игроку.
+    - Не было проверки на корректность конфигурации
+    
 Добавляйте сюда проблемы о которых вы знаете, но не смогли или не успели решить.
 
 
@@ -72,6 +77,27 @@
 */
 
 #include<stdio.h>
+
+bool check_config(int n, int min, int max)
+{
+    if (n <= 0)
+    {
+        printf("Total must be positive\n");
+        return 0;
+    }
+    if (min <= 0)
+    {
+        printf("Min must be positive\n");
+        return 0;
+    }
+    if (min > max)
+    {
+        printf("Min must not be greater than max\n");
+        return 0;
+    }
+    return 1;
+}
+
 int main()
 {
     int start,o;
@@ -81,60 +107,60 @@ int main()
     FILE *f = fopen("conf.txt", "rt");
     if(f!=NULL)
     {
-    fscanf(f, "%d%d%d%d%d", &start, &min, &max, &k, &l);
-    fclose(f);
+        fscanf(f, "%d%d%d%d%d", &start, &min, &max, &k, &l);
+        fclose(f);
     }
     else
     {
-    f=fopen("conf.txt","wt");
-    start=30;min=1;max=2;k=0;l=1;
-    fprintf(f,"%d %d %d %d %d", start, min, max,k,l);
-    fclose(f);
+        f=fopen("conf.txt","wt");
+        start=30;min=1;max=2;k=0;l=1;
+        fprintf(f,"%d %d %d %d %d", start, min, max,k,l);
+        fclose(f);
     }
+
+    if (!check_config(start, min, max))
+    {
+        return 1;
+    }
+
     int player_number=1;
     int current = start;
     printf("You can take from %d up to %d. There is %d now \n",min,max,current);
-     printf("Course %d player\n",player_number);
     while (current>=min)
     {   
-         int player_takes;
-        printf("Available: %d\n", current);        
-        if(player_number==1&&!k||player_number==2&&!l)
-        scanf("%d", &player_takes);
-        else {
-        o=current%(min+max);
-        player_takes=o<min?min:o>=max?max:o;
+        int player_takes;
+        printf("Available: %d\n", current);
+        printf("Course %d player\n",player_number);
+
+        if ((player_number==1 && !k) || (player_number == 2&&!l))
+        {
+            scanf("%d", &player_takes);
         }
-        if (player_takes < min || player_takes > max||player_takes>current)
+        else
+        {
+            o=current%(min+max);
+            player_takes=o<min?min:o>=max?max:o;
+            printf("Player %d takes %d\n", player_number, player_takes);
+        }
+
+        if (player_takes < min || player_takes > max || player_takes>current)
         {
             printf("Invalid input. You can take any number >= %d and <= %d. Try again (%d <= X <= %d)\n", min, max, min, max);
-             if (player_number==1)
-            {
-            printf("Course 1 player\n");
-            }
-            else 
-            {    
-                 printf("Course 2 player\n");
-            }            
+            printf("Course %d player\n", player_number);
         }
         else
         {  
             current -= player_takes;
-            if(current>=player_takes)
-            {           
-                if (player_number==1)
-                {
-                   player_number=player_number+1;
-                }
-                else 
-                {
-                    player_number=1;
-                }
-                 printf("Course %d player\n",player_number);
+            if (player_number==1)
+            {
+               player_number=2;
             }
-
+            else 
+            {
+                player_number=1;
+            }
         }
     }
     printf("The end of the game. Left: %d\n ", current);
-    printf("%d player wins", player_number);
+    printf("%d player wins", 3 - player_number);
 }

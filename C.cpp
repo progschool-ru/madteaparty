@@ -54,7 +54,7 @@
 
 
 Этап 7.
-Прислать до 22:00 вторника 10 января
+Выполнил участник С.
 
 - Избавьтесь от импорта ненужных библиотек.
 - Тестируем, исправляем ошибки.
@@ -75,7 +75,7 @@
 
 
 */
-
+// В файле пследняя цифра- кто играет. 1-пернвый комп,затем человек. 2-первый человек, затем комп. 3- два чела. 4- 2компа. 
 
 
 #include <fstream>
@@ -107,8 +107,8 @@ bool check_config(int n, int min, int max)
     }
     if (max <= 0)
     {
-        printf("Max must be positive\n");
-        return 1;
+        return 1;        printf("Max must be positive\n");
+
     }
     if (min > max)
     {
@@ -153,7 +153,7 @@ int main()
     printf("\n");
     while (n >= min)
     {    
-        if(player==2&&(a&2) || player==1&&(a&1))
+        if(player==2&&(a&2) || player==1&&(a&1) || a==4)
         { 
              if (n%(min + max)>=max) 
              {
